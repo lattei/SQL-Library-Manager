@@ -4,8 +4,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+/* Created Routers and db variable */
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var booksRouter = require('./routes/books');
+var { sequelize } = require('./models');
+
 
 var app = express();
 
@@ -20,7 +23,20 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/books', booksRouter);
+
+
+/* IIFE Async Fn */
+/*IIFE async */
+(async () => {
+  try {
+    await sequelize.sync();
+    console.log('Connection to the database successful.');
+  } catch (error) {
+    console.error('Error connecting to database: ', error);
+  }
+})();
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
