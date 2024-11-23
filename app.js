@@ -44,9 +44,15 @@ app.use(function(req, res, next) {
 });
 
 // Global error handler modified to meet step 5
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
+
   res.status(err.status || 500);
-  err.status === 400 ? res.render('page-not-found', { title: 'Page Not Found'}) : res.render('error', { title: 'Error!', error: err })
+  if (err.status === 404) {
+    res.render('page-not-found', { title: 'Page Not Found' });
+  } else {
+    res.render('error', { title: 'Error', error: err });
+  }
+
 });
 
 
