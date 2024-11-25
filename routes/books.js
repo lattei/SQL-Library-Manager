@@ -53,9 +53,38 @@ router.get('/new', (req, res) => {
 
 // Get a List of Books
 router.get('/', asyncHandler(async(req,res) => {
-  const books = await Book.findAll();
-  res.render("index", { books });
+  //Optional Search!
+  const { query } = req.query;
+  const page = parseInt(req.query.page) || 1;
+  const limit = 5;
+  const offset = (page - 1) * limit;
 
+  let whereQuery = {};
+  if (query) {
+    whereQuery = {
+      [Op.or]: [
+        { title: { [Op.like]: `%${query}` } },
+        { author: { [Op.like]: `%${query}` } },
+        { genre: { [Op.like]: `%${query}` } },
+        { year: { [Op.like]: `%${query}` } }
+      ],
+    };
+  }
+  const { count, rows: books } = await Book.findAndCountAll({
+    where: whereQuery,
+    limit,
+    offset
+  });
+
+  const totalPages = Math.ceil(count / limit);
+
+  res.render("index", {
+    title: "Books",
+    books,
+    query,
+    totalPages,
+    currPage: page
+  });
 
 }));
 

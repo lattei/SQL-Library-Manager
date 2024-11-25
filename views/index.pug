@@ -2,6 +2,10 @@ extends layout
 
 block content
   h1 Books
+
+  form(action="/books" method="get")
+    input(type="text" name="query" placeholder="Search for books by criteria!")
+    button(type="submit") Search
   p 
     a.button(href="/books/new") Add a New Book
 
@@ -19,4 +23,15 @@ block content
                 a(href=`/books/${book.id}`)=book.title
               td=book.author
               td=book.genre
-              td=book.year
+              td=book.year  
+        //- For Exceeds Expectations, Pagination
+        if totalPages > 1
+      div.pagination
+        if currPage > 1
+          a(href=`?page=${currPage - 1}&query=${query || ''}`)  Previous 
+
+        each pageNum in [...Array(totalPages).keys()].map(n => n + 1)
+          a(href=`?page=${pageNum}&query=${query || ''}` class=(pageNum === currPage ? 'active' : ''))=` ${pageNum} `  
+
+        if currPage < totalPages 
+          a(href=`?page=${currPage + 1}&query=${query || ''}`)  Next  
