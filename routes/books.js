@@ -63,10 +63,10 @@ router.get('/', asyncHandler(async(req,res) => {
   if (query) {
     whereQuery = {
       [Op.or]: [
-        { title: { [Op.like]: `%${query}` } },
-        { author: { [Op.like]: `%${query}` } },
+        { title: { [Op.like]: `%${query}%` } },
+        { author: { [Op.like]: `%${query}%` } },
         { genre: { [Op.like]: `%${query}` } },
-        { year: { [Op.like]: `%${query}` } }
+        { year: { [Op.like]: `%${query}%` } }
       ],
     };
   }
